@@ -71,11 +71,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     type: "image/png",
                 });
 
-                if (navigator.share) {
+                if (
+                    navigator.canShare &&
+                    navigator.canShare({ files: [file] })
+                ) {
                     navigator
                         .share({
-                            title: "QR Code for this page",
-                            text: "Scan this QR code to visit the page",
+                            title: documentTitle,
+                            text: "Scan this QR code to visit my profile",
                             files: [file],
                         })
                         .then(() => console.log("Successful QR code share"))
@@ -84,8 +87,9 @@ document.addEventListener("DOMContentLoaded", function () {
                         );
                 } else {
                     alert(
-                        "Web Share API is not available. Please download the QR code to share it."
+                        "Web Share API is not fully supported on this browser. Please download the QR code to share it."
                     );
+                    // Optionally, display a modal with alternative sharing options
                 }
             })
             .catch((error) => console.error("Error generating QR code", error));
@@ -126,7 +130,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 1000);
     }
 
-    // Set the URLs for social media sharing with app redirection for socialShareModal
+    // Set the URLs for social media sharing
     document
         .getElementById("facebookShare")
         .addEventListener("click", function (e) {
@@ -174,4 +178,24 @@ document.addEventListener("DOMContentLoaded", function () {
                 )}`
             );
         });
+
+    document
+        .getElementById("emailShare")
+        .addEventListener("click", function (e) {
+            e.preventDefault();
+            window.location.href = `mailto:?subject=${encodeURIComponent(
+                documentTitle
+            )}&body=${encodeURIComponent(pageUrl)}`;
+        });
+
+    document.getElementById("copyLink").addEventListener("click", function () {
+        navigator.clipboard
+            .writeText(pageUrl)
+            .then(() => {
+                alert("Link copied to clipboard!");
+            })
+            .catch((error) => {
+                console.error("Error copying link:", error);
+            });
+    });
 });
