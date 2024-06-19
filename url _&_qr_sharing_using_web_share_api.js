@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const shareOptionModal = document.getElementById("shareOptionModal");
     const closeModal = document.getElementById("closeModal");
     const closeSocialModal = document.getElementById("closeSocialModal");
+    const overlay = document.getElementById("overlay");
     const pageUrl = window.location.href;
     const documentTitle = document.title;
 
@@ -19,16 +20,26 @@ document.addEventListener("DOMContentLoaded", function () {
     // Show the modal with share options
     mainShareButton.addEventListener("click", function () {
         shareOptionModal.style.display = "block";
+        document.getElementById("overlay").style.display = "block";
     });
 
     // Close the share modal
     closeModal.addEventListener("click", () => {
         shareOptionModal.style.display = "none";
+        overlay.style.display = "none";
     });
 
     // Close the social media modal
     closeSocialModal.addEventListener("click", () => {
         socialShareModal.style.display = "none";
+        overlay.style.display = "none";
+    });
+
+    // Close the modal when clicking outside of the modal content
+    overlay.addEventListener("click", () => {
+        socialShareModal.style.display = "none";
+        shareOptionModal.style.display = "none";
+        overlay.style.display = "none";
     });
 
     // Close the modal when clicking outside of the modal content
@@ -61,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
     qrShareButton.addEventListener("click", function () {
         const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(
             pageUrl
-        )}&size=200x200`;
+        )}&size=250x250`;
 
         // Fetch the QR code image
         fetch(qrCodeUrl)
